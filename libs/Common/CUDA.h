@@ -47,7 +47,15 @@ inline CUresult __reportCudaError(CUresult result, LPCSTR errorMessage) {
 	LPCSTR szName;
 	cuGetErrorName(result, &szName);
 	LPCSTR szError;
-	cuGetErrorString(result, &szError);
+	CUresult getErrorStringResult = cuGetErrorString(result, &szError);
+	if (getErrorStringResult != CUDA_SUCCESS) {
+		std::cerr
+			<< "cuGetErrorString failed for CUResult "
+			<< static_cast<unsigned>(result)
+			<< (result == 4 ? " (CUDA_ERROR_NOT_INITIALIZED)" : "")
+			<< std::endl;
+	}
+	ASSERT(getErrorStringResult == CUDA_SUCCESS);
 	#ifdef _DEBUG
 	VERBOSE("CUDA error at %s:%d: %s (%s (code %d) - %s)", __FILE__, __LINE__, errorMessage, szName, static_cast<unsigned>(result), szError);
 	#else
