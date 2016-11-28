@@ -426,7 +426,14 @@ bool Scene::SelectNeighborViews(uint32_t ID, IndexArr& points, unsigned nMinView
 		}
 	}
 	imageData.avgDepth /= nPoints;
-	ASSERT(nPoints > 3);
+	// ASSERT(nPoints > 3); // nh2
+	if (nPoints <= 3) {
+		DEBUG_EXTRA("error: image %3u has less than 4 nPoints", ID); // nh2; skipping the above assert probably runs us into ../libs/MVS/SceneDensify.cpp:524: void DepthMapsData::InitDepthMap(MVS::DepthData&)::RasterDepthDataPlaneData::operator()(const ImageRef&): Assertion `z > 0' failed. Should the `points.Insert` be undone here?
+		for (int i = 0; i < nPoints; ++i) {
+			points.RemoveLast();
+		}
+		return false;
+	}
 
 	// select best neighborViews
 	Point2fArr pointsA(0, points.GetSize()), pointsB(0, points.GetSize());
