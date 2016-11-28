@@ -920,6 +920,7 @@ bool MVS::ExportPointCloud(const String& fileName, const Image& imageData, const
 
 		// export the array of 3D points
 		Vertex vertex;
+		std::cerr << "depthMap.rows: " << depthMap.rows  << " depthMap.cols: " << depthMap.cols << std::endl;
 		for (int j=0; j<depthMap.rows; ++j) {
 			for (int i=0; i<depthMap.cols; ++i) {
 				const Depth& depth = depthMap(j,i);

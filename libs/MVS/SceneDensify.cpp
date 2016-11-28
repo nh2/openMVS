@@ -687,7 +687,7 @@ bool DepthMapsData::EstimateDepthMap(uint32_t idxImage)
 		if (g_nVerbosityLevel > 4) {
 			ExportDepthMap(ComposeDepthFilePath(idxImage, "rough.png"), depthData.depthMap);
 			ExportNormalMap(ComposeDepthFilePath(idxImage, "rough.normal.png"), depthData.normalMap);
-			ExportPointCloud(ComposeDepthFilePath(idxImage, "rough.ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
+			// ExportPointCloud(ComposeDepthFilePath(idxImage, "rough.ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
 		}
 		#endif
 	}
@@ -749,7 +749,7 @@ bool DepthMapsData::EstimateDepthMap(uint32_t idxImage)
 			const String path(ComposeDepthFilePath(image.pImageData-scene.images.Begin(), "iter")+String::ToString(iter));
 			ExportDepthMap(path+".png", depthData.depthMap);
 			ExportNormalMap(path+".normal.png", depthData.normalMap);
-			ExportPointCloud(path+".ply", *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
+			// ExportPointCloud(path+".ply", *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
 		}
 		#endif
 	}
@@ -1787,7 +1787,7 @@ void Scene::DenseReconstructionEstimate(void* pData)
 			if (g_nVerbosityLevel > 2) {
 				ExportDepthMap(ComposeDepthFilePath(idx, "png"), depthData.depthMap);
 				ExportConfidenceMap(ComposeDepthFilePath(idx, "conf.png"), depthData.confMap);
-				ExportPointCloud(ComposeDepthFilePath(idx, "ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
+				// ExportPointCloud(ComposeDepthFilePath(idx, "ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
 				if (g_nVerbosityLevel > 4) {
 					ExportNormalMap(ComposeDepthFilePath(idx, "normal.png"), depthData.normalMap);
 					depthData.confMap.Save(ComposeDepthFilePath(idx, "conf.pfm"));
@@ -1887,7 +1887,7 @@ void Scene::DenseReconstructionFilter(void* pData)
 			// save depth map as image
 			if (g_nVerbosityLevel > 2) {
 				ExportDepthMap(ComposeDepthFilePath(idx, "filtered.png"), depthData.depthMap);
-				ExportPointCloud(ComposeDepthFilePath(idx, "filtered.ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
+				// ExportPointCloud(ComposeDepthFilePath(idx, "filtered.ply"), *depthData.images.First().pImageData, depthData.depthMap, depthData.normalMap);
 			}
 			#endif
 			depthData.DecRef();

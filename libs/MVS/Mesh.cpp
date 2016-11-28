@@ -3591,10 +3591,11 @@ void Mesh::ProjectOrthoTopDown(unsigned resolution, Image8U3& image, Image8U& ma
 
 
 #ifdef _USE_CUDA
-CUDA::KernelRT Mesh::kernelComputeFaceNormal;
+// CUDA::KernelRT Mesh::kernelComputeFaceNormal;
 
 bool Mesh::InitKernels(int device)
 {
+	std::cerr << "Mesh::InitKernels" << std::endl;
 	// initialize CUDA device if needed
 	if (CUDA::devices.IsEmpty() && CUDA::initDevice(device) != CUDA_SUCCESS)
 		return false;

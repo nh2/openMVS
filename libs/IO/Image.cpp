@@ -57,6 +57,7 @@ HRESULT CImage::Reset(LPCTSTR szFileName, IMCREATE mode)
 		f = new File(szFileName, File::WRITE, File::CREATE | File::TRUNCATE);
 	}
 	if (!f->isOpen()) {
+		LOG(LT_IMAGE, _T("error: failed opening image '%s'"), szFileName);
 		delete f;
 		return _INVALIDFILE;
 	}

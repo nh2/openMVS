@@ -109,6 +109,7 @@ bool LoadNVM(std::ifstream& in, std::vector<CameraT>& camera_data, std::vector<P
 
     //////////////////////////////////////
     in >> npoint;   if(npoint <= 0) return false; 
+    std::cout << "nh2: npoint " << npoint << std::endl;
 
     //read image projections and 3D points.
     point_data.resize(npoint); 
@@ -117,10 +118,13 @@ bool LoadNVM(std::ifstream& in, std::vector<CameraT>& camera_data, std::vector<P
         float pt[3]; int cc[3], npj;
         in  >> pt[0] >> pt[1] >> pt[2] 
             >> cc[0] >> cc[1] >> cc[2] >> npj;
+        std::cout << "nh2: npj " << npj << std::endl;
         for(int j = 0; j < npj; ++j)
         {
             int cidx, fidx; float imx, imy;
             in >> cidx >> fidx >> imx >> imy;
+
+            std::cout << "nh2: " << cidx << " " << fidx << " " << imx << " " << imy << std::endl;
 
             camidx.push_back(cidx);    //camera index
             ptidx.push_back(i);        //point index

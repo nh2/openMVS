@@ -222,22 +222,34 @@ bool ParseImageListXML(MVS::Scene& scene, PlatformDistCoeffs& pltDistCoeffs, siz
 	tinyxml2::XMLDocument doc;
 	doc.Parse(strCameras.c_str(), nLen);
 	if (doc.ErrorID() != tinyxml2::XML_SUCCESS)
-		goto InvalidDocument;
+		{
+			VERBOSE("Invalid camera list");
+			return false;
+		}
 	tinyxml2::XMLElement* document = doc.FirstChildElement(_T("document"))->FirstChildElement(_T("chunk"));
 	if (document == NULL)
-		goto InvalidDocument;
+		{
+			VERBOSE("Invalid camera list");
+			return false;
+		}
 	bool bPhotoScanFile(false);
 
 	// parse platform and camera models
 	{
 	tinyxml2::XMLElement* sensors = document->FirstChildElement(_T("sensors"));
 	if (sensors == NULL)
-		goto InvalidDocument;
+		{
+			VERBOSE("Invalid camera list");
+			return false;
+		}
 	{
 	for (tinyxml2::XMLElement* sensor=sensors->FirstChildElement(); sensor!=NULL; sensor=sensor->NextSiblingElement()) {
 		unsigned ID;
 		if (0 != _tcsicmp(sensor->Value(), _T("sensor")) || sensor->QueryUnsignedAttribute(_T("id"), &ID) != tinyxml2::XML_SUCCESS)
-			goto InvalidDocument;
+			{
+				VERBOSE("Invalid camera list");
+				return false;
+			}
 		{
 		// add new camera
 		enum CameraModel {PHOTOSCAN=0, VSFM};
@@ -251,7 +263,10 @@ bool ParseImageListXML(MVS::Scene& scene, PlatformDistCoeffs& pltDistCoeffs, siz
 		// parse intrinsics
 		tinyxml2::XMLElement* calibration = sensor->FirstChildElement(_T("calibration"));
 		if (calibration == NULL)
-			goto InvalidDocument;
+			{
+				VERBOSE("Invalid camera list");
+				return false;
+			}
 		{
 		REAL scale(1);
 		if ((elem=calibration->FirstChildElement(_T("resolution"))) != NULL) {
@@ -320,7 +335,10 @@ bool ParseImageListXML(MVS::Scene& scene, PlatformDistCoeffs& pltDistCoeffs, siz
 	{
 	tinyxml2::XMLElement* cameras = document->FirstChildElement(_T("cameras"));
 	if (cameras == NULL)
-		goto InvalidDocument;
+		{
+			VERBOSE("Invalid camera list");
+			return false;
+		}
 	{
 	PMatrix P;
 	size_t argc;
@@ -328,7 +346,10 @@ bool ParseImageListXML(MVS::Scene& scene, PlatformDistCoeffs& pltDistCoeffs, siz
 	for (tinyxml2::XMLElement* camera=cameras->FirstChildElement(); camera!=NULL; camera=camera->NextSiblingElement()) {
 		unsigned ID;
 		if (0 != _tcsicmp(camera->Value(), _T("camera")) || camera->QueryUnsignedAttribute(_T("id"), &ID) != tinyxml2::XML_SUCCESS)
-			goto InvalidDocument;
+			{
+				VERBOSE("Invalid camera list");
+				return false;
+			}
 		{
 		// add new image
 		ASSERT(scene.images.GetSize() == ID);
@@ -375,9 +396,6 @@ bool ParseImageListXML(MVS::Scene& scene, PlatformDistCoeffs& pltDistCoeffs, siz
 	}
 
 	return true;
-	InvalidDocument:
-	VERBOSE("Invalid camera list");
-	return false;
 }
 
 // undistort image using Brown's model

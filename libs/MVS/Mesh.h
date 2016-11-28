@@ -95,7 +95,8 @@ public:
 	Image8U3 textureDiffuse; // texture containing the diffuse color (optional)
 
 	#ifdef _USE_CUDA
-	static CUDA::KernelRT kernelComputeFaceNormal;
+	// static CUDA::KernelRT kernelComputeFaceNormal;
+	CUDA::KernelRT kernelComputeFaceNormal;
 	#endif
 
 public:
@@ -174,7 +175,7 @@ protected:
 	bool SaveOBJ(const String& fileName) const;
 
 	#ifdef _USE_CUDA
-	static bool InitKernels(int device=-1);
+	bool InitKernels(int device=-1);
 	#endif
 
 	#ifdef _USE_BOOST

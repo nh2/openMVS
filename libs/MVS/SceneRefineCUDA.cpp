@@ -2488,7 +2488,7 @@ void MeshRefineCUDA::ComputeNormalFaces()
 {
 	const FIndex numFaces(scene.mesh.faces.GetSize());
 	reportCudaError(faceNormals.Reset(sizeof(Point3f)*numFaces));
-	reportCudaError(Mesh::kernelComputeFaceNormal((int)numFaces,
+	reportCudaError(scene.mesh.kernelComputeFaceNormal((int)numFaces,
 		vertices,
 		faces,
 		faceNormals,

@@ -40,12 +40,15 @@ struct Device {
 typedef CLISTDEF0(Device) Devices;
 extern Devices devices;
 
+void __reportCudaError_helper(CUresult result, CUresult getErrorStringResult);
+
 // outputs the proper CUDA error code in the event that a CUDA host call returns an error
 inline CUresult __reportCudaError(CUresult result, LPCSTR errorMessage) {
 	if (result == CUDA_SUCCESS)
 		return CUDA_SUCCESS;
 	LPCSTR szName;
-	cuGetErrorName(result, &szName);
+	CUresult cuGetErrorNameResult = cuGetErrorName(result, &szName);
+	std::cerr << "cuGetErrorNameResult " << cuGetErrorNameResult << std::endl;
 	LPCSTR szError;
 	CUresult getErrorStringResult = cuGetErrorString(result, &szError);
 	if (getErrorStringResult != CUDA_SUCCESS) {
@@ -55,6 +58,10 @@ inline CUresult __reportCudaError(CUresult result, LPCSTR errorMessage) {
 			<< (result == 4 ? " (CUDA_ERROR_NOT_INITIALIZED)" : "")
 			<< std::endl;
 	}
+	if (getErrorStringResult != CUDA_SUCCESS) {
+		std::cerr << "cuGetErrorString returned CUresult " << (int)getErrorStringResult << std::endl;
+	}
+	__reportCudaError_helper(result, getErrorStringResult);
 	ASSERT(getErrorStringResult == CUDA_SUCCESS);
 	#ifdef _DEBUG
 	VERBOSE("CUDA error at %s:%d: %s (%s (code %d) - %s)", __FILE__, __LINE__, errorMessage, szName, static_cast<unsigned>(result), szError);
@@ -300,7 +307,7 @@ protected:
 	KernelRT& operator=(const KernelRT&);
 
 public:
-	inline KernelRT() : hKernel(NULL) {}
+	KernelRT();
 	inline KernelRT(const ModuleRTPtr& _ptrModule, LPCSTR functionName) : ptrModule(_ptrModule) { Reset(functionName); }
 	inline KernelRT(LPCSTR program, LPCSTR functionName, int mode=JIT::AUTO) { Reset(program, functionName, mode); }
 	inline ~KernelRT() { Release(); }

@@ -238,6 +238,7 @@ CUresult ptxJIT(LPCSTR program, CUmodule& hModule, int mode)
 	DEBUG_LEVEL(3, "CUDA link completed (%gms):\n%s", walltime, info_log);
 
 	// Load resulting cuBin into module
+	std::cerr << "calling cuModuleLoadData" << std::endl;
 	checkCudaError(cuModuleLoadData(&hModule, cuOut));
 
 	// Destroy the linker invocation
@@ -334,7 +335,10 @@ CUresult StreamRT::Wait(CUevent hEvent) {
 
 void ModuleRT::Release() {
 	if (hModule) {
-		reportCudaError(cuModuleUnload(hModule));
+		std::cerr << "calling cuModuleUnload" << std::endl;
+		CUresult cuModuleUnloadResult = cuModuleUnload(hModule);
+		std::cerr << "calling cuModuleUnloadResult " << cuModuleUnloadResult << std::endl;
+		reportCudaError(cuModuleUnloadResult);
 		hModule = NULL;
 	}
 }
@@ -348,10 +352,16 @@ CUresult ModuleRT::Reset(LPCSTR program, int mode) {
 /*----------------------------------------------------------------*/
 
 
+KernelRT::KernelRT() : hKernel(NULL) {
+	std::cerr << "KernelRT constructor" << std::endl;
+}
+
 void KernelRT::Release() {
 	inDatas.Release();
 	outDatas.Release();
+	std::cerr << "before ptrModule.Release" << std::endl;
 	ptrModule.Release();
+	std::cerr << "after ptrModule.Release" << std::endl;
 	hKernel = NULL;
 }
 void KernelRT::Reset() {
@@ -416,6 +426,12 @@ CUresult KernelRT::GetResult(const std::initializer_list<ReturnParam>& params) c
 	return CUDA_SUCCESS;
 }
 /*----------------------------------------------------------------*/
+
+void __reportCudaError_helper(CUresult result, CUresult getErrorStringResult) {
+	std::cerr << "__reportCudaError_helper" << std::endl;
+	std::cerr << "result " << (int)result << " getErrorStringResult " << (int)getErrorStringResult << std::endl;
+
+}
 
 } // namespace CUDA
 

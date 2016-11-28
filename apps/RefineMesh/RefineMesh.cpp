@@ -243,7 +243,10 @@ int main(int argc, LPCTSTR* argv)
 							  OPT::nAlternatePair>10 ? OPT::nAlternatePair%10 : 0,
 							  OPT::fRegularityWeight,
 							  OPT::fRatioRigidityElasticity,
-							  OPT::fGradientStep))
+							  OPT::fGradientStep)) {
+		VERBOSE("error: scene.RefineMeshCUDA failed");
+		return EXIT_FAILURE;
+	}
 	#endif
 	if (!scene.RefineMesh(OPT::nResolutionLevel, OPT::nMinResolution, OPT::nMaxViews,
 						  OPT::fDecimateMesh, OPT::nCloseHoles, OPT::nEnsureEdgeSize,
@@ -253,8 +256,10 @@ int main(int argc, LPCTSTR* argv)
 						  OPT::fRegularityWeight,
 						  OPT::fRatioRigidityElasticity,
 						  OPT::fPlanarVertexRatio,
-						  OPT::fGradientStep))
+						  OPT::fGradientStep)) {
+		VERBOSE("error: scene.RefineMesh failed");
 		return EXIT_FAILURE;
+	}
 	VERBOSE("Mesh refinement completed: %u vertices, %u faces (%s)", scene.mesh.vertices.GetSize(), scene.mesh.faces.GetSize(), TD_TIMER_GET_FMT().c_str());
 
 	// save the final mesh

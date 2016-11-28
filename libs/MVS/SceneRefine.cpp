@@ -1292,8 +1292,10 @@ bool Scene::RefineMesh(unsigned nResolutionLevel, unsigned nMinResolution, unsig
 					   unsigned nReduceMemory, unsigned nAlternatePair, float fRegularityWeight, float fRatioRigidityElasticity, float fThPlanarVertex, float fGradientStep)
 {
 	MeshRefine refine(*this, nReduceMemory, nAlternatePair, fRegularityWeight, fRatioRigidityElasticity, nResolutionLevel, nMinResolution, nMaxViews, nMaxThreads);
-	if (!refine.IsValid())
+	if (!refine.IsValid()) {
+		VERBOSE("!refine.IsValid()");
 		return false;
+	}
 
 	// run the mesh optimization on multiple scales (coarse to fine)
 	for (unsigned nScale=0; nScale<nScales; ++nScale) {
